@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>十进制转二进制</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="common/jquery-3.3.1.js"></script>
+</head>
+<body>
+  <input id="dec-number" type="number" placeholder="输入一个十进制非负整数">
+  <input id="bin-bit" type="number" placeholder="输入转化后二进制数字位数">
+  <button id="trans-btn">转化为二进制</button>
+  <p id="result">运算结果</p>
+  <script>
+    $(function() {
+      // 普通10进制转2进制的方法
+      function dec2bin(decNumber) {
+        let result = 0;
+        let total = 0;
+        if (decNumber > 1) {
+          while (decNumber - total > 1) {
+            let count = 0;
+            let first = decNumber - total;
+            while (first > 1) {
+              count++;
+              first = parseInt(first / 2);
+            }
+            total += Math.pow(2, count);
+            result += Math.pow(10, count);
+          }
+
+          if (decNumber % 2 === 1) {
+            result += 1;
+          }
+        } else {
+          result = decNumber;
+        }
+        return result;
+      }
+      // 获取数字的位数的方法
+      function getNumBit(num) {
+        let count = 0;
+        if (num > 1) {
+          while (num >= 1) {
+            count++;
+            num = parseInt(num / 2);
+          }
+        } else {
+          count = 1
+        }
+        return count;
+      }
+      // 添加自动补全位数的10进制转2进制方法
+      function transBit(decNumber,bit) {
+        let result = dec2bin(decNumber);
+        if (getNumBit(decNumber) >= bit) {
+          console.log("输入转化后二进制数字位数小于或等于未转换时的位数！不必做补全处理");
+        } else {
+          let fullBit = bit - getNumBit(decNumber);
+          let perfix = [];
+          while (fullBit) {
+            fullBit--;
+            perfix.push("0");
+          }
+          result =  perfix.join(',') + String(result);
+        }
+        return result;
+      }
+      $('#trans-btn').on('click',function() {
+        if ($('#dec-number').val() >= 0 && $('#dec-number').val() % 1 === 0) {
+          // 十进制转二进制
+          // $('#result').text(dec2bin($('#dec-number').val()));
+          // 十进制转二进制后补全位数处理
+          $('#result').text(transBit($('#dec-number').val(), $('#bin-bit').val()));
+        } else {
+          $('#result').text("请输入大于等于0的正数");
+        }
+      })
+    })
+  </script>
+</body>
+</html>
